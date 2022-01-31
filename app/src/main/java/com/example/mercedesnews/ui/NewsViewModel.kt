@@ -53,10 +53,6 @@ class NewsViewModel(
         newsRepository.upsert(article)
     }
 
-//    fun saveArticle(article: @NonNull com.example.mercedesnews.models.Article) = viewModelScope.launch {
-//        newsRepository.upsert(article)
-//    }
-
     fun savedNews() = newsRepository.getSavedNews()
 
     fun deleteArticle(article: Article) = viewModelScope.launch {

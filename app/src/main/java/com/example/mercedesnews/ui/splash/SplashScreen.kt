@@ -1,4 +1,4 @@
-package com.example.mercedesnews.splash
+package com.example.mercedesnews.ui.splash
 
 import android.content.Intent
 import android.os.Bundle

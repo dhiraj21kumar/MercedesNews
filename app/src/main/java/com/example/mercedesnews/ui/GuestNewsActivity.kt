@@ -12,16 +12,16 @@ import kotlinx.android.synthetic.main.activity_guest_news.*
 
 class GuestNewsActivity : AppCompatActivity() {
 
-    lateinit var viewModel: NewsViewModel
-
+//    lateinit var viewModel: NewsViewModel
+private val component = Component()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_guest_news)
 
         val newsRepository = NewsRepository(ArticleDatabase(this))
         val viewModelProviderFactory = NewsViewModelProviderFactory(newsRepository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory).get(NewsViewModel::class.java)
-
+//        viewModel = ViewModelProvider(this, viewModelProviderFactory).get(NewsViewModel::class.java)
+        component.newsModel
         guestBottomNavigationView.setupWithNavController(guestNewsNavHostFragment.findNavController())
 
         supportActionBar?.hide()

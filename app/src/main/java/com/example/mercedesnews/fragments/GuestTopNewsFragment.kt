@@ -4,49 +4,50 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AbsListView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mercedesnews.R
 import com.example.mercedesnews.adapters.NewsAdapter
+import com.example.mercedesnews.ui.Component
 import com.example.mercedesnews.ui.GuestNewsActivity
-import com.example.mercedesnews.ui.NewsActivity
 import com.example.mercedesnews.ui.NewsViewModel
 import com.example.mercedesnews.util.Constants
 import com.example.mercedesnews.util.Resource
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_guest_top_news.*
 import kotlinx.android.synthetic.main.fragment_top_news.*
+import org.koin.android.ext.android.get
 
 class GuestTopNewsFragment: Fragment(R.layout.fragment_guest_top_news) {
 
-    lateinit var viewModel: NewsViewModel
-    lateinit var newsAdapter: NewsAdapter
+//    lateinit var viewModel: NewsViewModel
+    private val component = Component()
+//    lateinit var newsAdapter: NewsAdapter
 
     val TAG = "TopNewsFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = (activity as GuestNewsActivity).viewModel
+//        viewModel = (activity as GuestNewsActivity).viewModel
+        component.newsModel
         setupRecyclerView()
 
-        newsAdapter.setOnItemClickListner {
+        component.newAdapterModel.setOnItemClickListner {
             Snackbar.make(view,"Please Login/Register", Snackbar.LENGTH_SHORT).show()
         }
 
-        viewModel.topNews.observe(viewLifecycleOwner, Observer { response ->
+        component.newsModel.topNews.observe(viewLifecycleOwner, Observer { response ->
 
             when (response){
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?. let { newsResponse ->
-                        newsAdapter.differ.submitList(newsResponse.articles.toList())
+                        component.newAdapterModel.differ.submitList(newsResponse.articles.toList())
                         val totalPages = newsResponse.totalResults / Constants.QUERY_PAGE_SIZE + 2
-                        isLastPage = viewModel.topNewsPage == totalPages
+                        isLastPage = component.newsModel.topNewsPage == totalPages
                         if (isLastPage) {
                             rvTopNews.setPadding(0,0,0,0)
                         }
@@ -109,16 +110,17 @@ class GuestTopNewsFragment: Fragment(R.layout.fragment_guest_top_news) {
                     && isNotAtBeginning && isTotalMoreThanVisible && isScrolling
 
             if (shouldPaginate){
-                viewModel.getTopNews("in")
+                component.newsModel.getTopNews("in")
                 isScrolling = false
             }
         }
     }
 
     private fun setupRecyclerView() {
-        newsAdapter = NewsAdapter()
+//        newsAdapter = NewsAdapter(get())
+        component.newAdapterModel
         rvGuestTopNews.apply {
-            adapter = newsAdapter
+            component.newAdapterModel
             layoutManager = LinearLayoutManager(activity)
             addOnScrollListener(this@GuestTopNewsFragment.scrollListner )
         }

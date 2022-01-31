@@ -14,24 +14,29 @@ import com.example.mercedesnews.R
 import com.example.mercedesnews.ui.NewsActivity
 import com.example.mercedesnews.ui.NewsViewModel
 import com.example.mercedesnews.adapters.NewsAdapter
+import com.example.mercedesnews.ui.Component
 import com.example.mercedesnews.util.Constants.Companion.QUERY_PAGE_SIZE
 import com.example.mercedesnews.util.Resource
 import kotlinx.android.synthetic.main.fragment_top_news.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.context.GlobalContext.get
 
 class TopNewsFragment: Fragment(R.layout.fragment_top_news) {
 
-    lateinit var viewModel: NewsViewModel
-    lateinit var newsAdapter: NewsAdapter
+//    lateinit var viewModel: NewsViewModel
+    private val component = Component()
+//    lateinit var newsAdapter: NewsAdapter
 
     val TAG = "TopNewsFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = (activity as NewsActivity).viewModel
+//        viewModel = (activity as NewsActivity).viewModel
+        component.newsModel
         setupRecyclerView()
 
-        newsAdapter.setOnItemClickListner {
+        component.newAdapterModel.setOnItemClickListner {
             val bundle = Bundle().apply {
                 putSerializable("article", it)
             }
@@ -41,15 +46,15 @@ class TopNewsFragment: Fragment(R.layout.fragment_top_news) {
             )
         }
 
-        viewModel.topNews.observe(viewLifecycleOwner, Observer { response ->
+        component.newsModel.topNews.observe(viewLifecycleOwner, Observer { response ->
 
             when (response){
                 is Resource.Success -> {
                     hideProgressBar()
                     response.data?. let { newsResponse ->
-                        newsAdapter.differ.submitList(newsResponse.articles.toList())
+                        component.newAdapterModel.differ.submitList(newsResponse.articles.toList())
                         val totalPages = newsResponse.totalResults / QUERY_PAGE_SIZE + 2
-                        isLastPage = viewModel.topNewsPage == totalPages
+                        isLastPage = component.newsModel.topNewsPage == totalPages
                         if (isLastPage) {
                             rvTopNews.setPadding(0,0,0,0)
                         }
@@ -112,16 +117,18 @@ class TopNewsFragment: Fragment(R.layout.fragment_top_news) {
                     && isNotAtBeginning && isTotalMoreThanVisible && isScrolling
 
             if (shouldPaginate){
-                viewModel.getTopNews("in")
+                component.newsModel.getTopNews("in")
                 isScrolling = false
             }
         }
     }
 
     private fun setupRecyclerView() {
-        newsAdapter = NewsAdapter()
+//        newsAdapter = NewsAdapter(get())
+        component.newAdapterModel
         rvTopNews.apply {
-            adapter = newsAdapter
+//            adapter = newsAdapter
+            component.newAdapterModel
             layoutManager = LinearLayoutManager(activity)
             addOnScrollListener(this@TopNewsFragment.scrollListner )
         }

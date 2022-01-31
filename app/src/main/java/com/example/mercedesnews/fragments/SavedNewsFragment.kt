@@ -13,22 +13,27 @@ import com.example.mercedesnews.R
 import com.example.mercedesnews.ui.NewsActivity
 import com.example.mercedesnews.ui.NewsViewModel
 import com.example.mercedesnews.adapters.NewsAdapter
+import com.example.mercedesnews.ui.Component
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_saved_news.*
 import kotlinx.android.synthetic.main.fragment_top_news.*
+import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SavedNewsFragment: Fragment(R.layout.fragment_saved_news) {
 
-    lateinit var viewModel: NewsViewModel
-    lateinit var newsAdapter: NewsAdapter
+//    lateinit var viewModel: NewsViewModel
+//    lateinit var newsAdapter: NewsAdapter
+    private val component = Component()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = (activity as NewsActivity).viewModel
+//        viewModel = (activity as NewsActivity).viewModel
         setupRecyclerView()
+        component.newsModel
 
-        newsAdapter.setOnItemClickListner {
+        component.newAdapterModel.setOnItemClickListner {
             val bundle = Bundle().apply {
                 putSerializable("article", it)
             }
@@ -52,11 +57,11 @@ class SavedNewsFragment: Fragment(R.layout.fragment_saved_news) {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val article = newsAdapter.differ.currentList[position]
-                viewModel.deleteArticle(article)
+                val article = component.newAdapterModel.differ.currentList[position]
+                component.newsModel.deleteArticle(article)
                 Snackbar.make(view, "Successfully Deleted News", Snackbar.LENGTH_LONG).apply {
                     setAction("Undo") {
-                        viewModel.saveArticle(article)
+                        component.newsModel.saveArticle(article)
                     }
                     show()
                 }
@@ -67,17 +72,19 @@ class SavedNewsFragment: Fragment(R.layout.fragment_saved_news) {
             attachToRecyclerView(rvSavedNews)
         }
 
-        viewModel.savedNews().observe(viewLifecycleOwner, Observer { articles ->
-            newsAdapter.differ.submitList(articles)
+        component.newsModel.savedNews().observe(viewLifecycleOwner, Observer { articles ->
+            component.newAdapterModel.differ.submitList(articles)
 
         })
 
     }
 
     private fun setupRecyclerView() {
-        newsAdapter = NewsAdapter()
+//        newsAdapter = NewsAdapter(get())
+        component.newAdapterModel
         rvSavedNews.apply {
-            adapter = newsAdapter
+            component.newAdapterModel
+//            adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
         }
     }
