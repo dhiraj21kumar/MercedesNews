@@ -106,6 +106,8 @@ dependencies {
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
 // Koin AndroidX Experimental features
     implementation "io.insert-koin:koin-androidx-ext:$koin_version"
+
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
 }
 
 kapt{

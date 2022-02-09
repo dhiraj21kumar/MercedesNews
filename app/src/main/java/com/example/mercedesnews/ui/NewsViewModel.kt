@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class NewsViewModel(
-    val newsRepository: NewsRepository
+    var newsRepository: NewsRepository
 ): ViewModel() {
 
     val topNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()

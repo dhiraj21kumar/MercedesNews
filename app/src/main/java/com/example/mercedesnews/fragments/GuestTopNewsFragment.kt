@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.AbsListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mercedesnews.R
@@ -19,10 +20,12 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_guest_top_news.*
 import kotlinx.android.synthetic.main.fragment_top_news.*
 import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GuestTopNewsFragment: Fragment(R.layout.fragment_guest_top_news) {
 
 //    lateinit var viewModel: NewsViewModel
+val newsViewModel: NewsViewModel by viewModel()
     private val component = Component()
 //    lateinit var newsAdapter: NewsAdapter
 
